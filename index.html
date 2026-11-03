@@ -4,150 +4,282 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>School Portal</title>
+<title>School Terminal</title>
 
 <style>
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    background: #080808;
+    background: #050505;
     color: white;
     font-family: Arial, sans-serif;
     overflow: hidden;
 }
 
-/* Screens */
+/* ANIMATED BACKGROUND */
+
+.background {
+    position: fixed;
+    inset: -50%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background: #030404;
+}
+
+.background::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        repeating-linear-gradient(
+            165deg,
+            transparent 0px,
+            transparent 65px,
+            rgba(180,220,255,0.12) 67px,
+            transparent 71px,
+            transparent 130px
+        );
+    transform: rotate(-12deg) scale(1.5);
+    animation: streaks 12s linear infinite;
+}
+
+.background::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at center,
+        transparent 15%,
+        rgba(0,0,0,0.45) 75%,
+        #000 110%);
+}
+
+@keyframes streaks {
+    from {
+        transform: translateX(-100px) translateY(-100px) rotate(-12deg) scale(1.5);
+    }
+    to {
+        transform: translateX(100px) translateY(100px) rotate(-12deg) scale(1.5);
+    }
+}
+
+/* SCREENS */
 
 .screen {
     position: fixed;
     inset: 0;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    background: #080808;
-    transition: opacity 0.4s ease;
 }
 
 .hidden {
     display: none !important;
 }
 
-/* Password screen */
+/* PASSWORD SCREEN */
 
 .login-box {
     width: 90%;
-    max-width: 370px;
+    max-width: 380px;
     text-align: center;
 }
 
 .login-box h1 {
-    font-size: 36px;
+    font-size: 42px;
+    font-weight: 300;
+    letter-spacing: 5px;
+    color: #a5c9c1;
     margin-bottom: 12px;
 }
 
 .subtitle {
-    color: #888;
+    color: #999;
     font-size: 14px;
     margin-bottom: 30px;
 }
 
 input {
     width: 100%;
-    padding: 15px;
-    background: #151515;
-    border: 1px solid #333;
-    border-radius: 8px;
+    padding: 16px;
+    background: #222;
+    border: 1px solid #444;
+    border-radius: 9px;
     color: white;
-    outline: none;
     font-size: 15px;
-    margin-bottom: 12px;
     text-align: center;
+    outline: none;
+    margin-bottom: 13px;
 }
 
 input:focus {
-    border-color: #777;
+    border-color: #a5c9c1;
 }
 
 button {
     cursor: pointer;
-    border: none;
-    transition: 0.2s ease;
+    font-family: inherit;
 }
 
 .enter-btn {
     width: 100%;
-    padding: 14px;
-    background: white;
-    color: black;
-    border-radius: 8px;
-    font-size: 14px;
+    padding: 15px;
+    border: none;
+    border-radius: 9px;
+    background: #a5c9c1;
+    color: #101010;
     font-weight: bold;
+    font-size: 14px;
+    transition: 0.2s;
 }
 
 .enter-btn:hover {
-    background: #cccccc;
+    background: white;
     transform: translateY(-2px);
 }
 
 .error {
-    color: #ff5555;
+    color: #ff6464;
     font-size: 13px;
-    margin-top: 14px;
+    margin-top: 15px;
     min-height: 16px;
 }
 
-/* Selection screen */
+/* MAIN MENU */
 
-.menu-content {
-    width: 90%;
-    max-width: 550px;
-    text-align: center;
+#menu-screen {
+    justify-content: flex-start;
+    overflow-y: auto;
+    padding: 35px 20px 45px;
 }
 
-.menu-content h1 {
-    font-size: 32px;
-    margin-bottom: 10px;
-}
-
-.menu-content p {
-    color: #888;
-    margin-bottom: 35px;
-    font-size: 14px;
-}
-
-.site-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.site-btn {
+.menu-header {
     width: 100%;
-    padding: 23px;
-    border-radius: 10px;
-    background: #151515;
+    text-align: center;
+    margin: 0 0 35px;
+    padding-top: 5px;
+}
+
+.menu-header h1 {
+    font-size: clamp(43px, 7vw, 105px);
+    font-weight: 300;
+    letter-spacing: 8px;
+    color: #a5c9c1;
+    text-shadow: 0 0 25px rgba(165,201,193,0.12);
+}
+
+.menu-header p {
+    color: #888;
+    font-size: 14px;
+    margin-top: 5px;
+    letter-spacing: 2px;
+}
+
+/* WEBSITE CARDS */
+
+.cards {
+    width: 100%;
+    max-width: 1120px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin: 0 auto;
+}
+
+.site-card {
+    min-height: 440px;
+    background: #353535;
+    border: 1px solid rgba(255,255,255,0.035);
+    border-radius: 48px;
+    padding: 35px 25px 30px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: center;
+    box-shadow: 0 9px 17px rgba(255,255,255,0.10);
+    transition:
+        transform 0.3s ease,
+        background 0.3s ease,
+        box-shadow 0.3s ease;
     color: white;
-    border: 1px solid #292929;
-    font-size: 19px;
-    font-weight: bold;
 }
 
-.site-btn:hover {
-    background: #222;
-    border-color: #666;
-    transform: translateY(-3px);
+.site-card:hover {
+    transform: translateY(-9px) scale(1.015);
+    background: #414141;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5),
+                0 0 20px rgba(165,201,193,0.12);
 }
 
-/* Website iframe */
+.card-icon {
+    width: 210px;
+    height: 210px;
+    margin: 5px 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.card-icon .emoji-icon {
+    font-size: 145px;
+    filter: drop-shadow(0 8px 10px rgba(0,0,0,0.25));
+}
+
+.site-card h2 {
+    font-size: 31px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #ededed;
+}
+
+.site-card p {
+    font-size: 17px;
+    line-height: 1.5;
+    color: #dedede;
+    max-width: 380px;
+}
+
+.card-label {
+    margin-top: auto;
+    padding-top: 20px;
+    color: #a5c9c1;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* FPS STYLE DECORATION */
+
+.status {
+    position: fixed;
+    top: 20px;
+    right: 25px;
+    color: rgba(255,255,255,0.35);
+    font-family: monospace;
+    font-size: 17px;
+    z-index: 2;
+    letter-spacing: 1px;
+}
+
+/* WEBSITE VIEWER */
 
 #website-screen {
     display: block;
     background: black;
+    z-index: 10;
 }
 
 #website-frame {
@@ -161,31 +293,32 @@ button {
 
 .back-btn {
     position: fixed;
-    z-index: 5;
+    z-index: 15;
     top: 15px;
     left: 15px;
-    padding: 10px 15px;
+    padding: 11px 17px;
+    border: 1px solid #666;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.8);
     color: white;
-    background: rgba(0,0,0,0.75);
-    border: 1px solid #555;
-    border-radius: 7px;
-    font-size: 13px;
+    font-size: 14px;
+    transition: 0.2s;
 }
 
 .back-btn:hover {
-    background: #333;
+    background: #444;
 }
 
-/* Black fade transition */
+/* FADE TRANSITION */
 
 #fade {
     position: fixed;
-    z-index: 100;
     inset: 0;
     background: black;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.4s ease;
+    z-index: 100;
+    transition: opacity 0.45s ease;
 }
 
 #fade.active {
@@ -193,12 +326,59 @@ button {
     pointer-events: all;
 }
 
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    #menu-screen {
+        padding-top: 65px;
+    }
+
+    .menu-header h1 {
+        letter-spacing: 3px;
+    }
+
+    .cards {
+        max-width: 420px;
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .site-card {
+        min-height: 350px;
+        border-radius: 32px;
+    }
+
+    .card-icon {
+        width: 155px;
+        height: 155px;
+    }
+
+    .card-icon .emoji-icon {
+        font-size: 110px;
+    }
+
+    .site-card h2 {
+        font-size: 27px;
+    }
+
+    .site-card p {
+        font-size: 15px;
+    }
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- BLACK TRANSITION -->
+<!-- BACKGROUND -->
+<div class="background"></div>
+
+<!-- STATUS -->
+<div class="status" id="status">FPS: --</div>
+
+<!-- FADE -->
 <div id="fade"></div>
 
 <!-- PASSWORD SCREEN -->
@@ -206,7 +386,7 @@ button {
 
     <div class="login-box">
 
-        <h1>Welcome</h1>
+        <h1>School Terminal</h1>
 
         <p class="subtitle">
             Enter the password to continue
@@ -219,6 +399,7 @@ button {
                 id="password"
                 placeholder="Enter password..."
                 autocomplete="off"
+                required
             >
 
             <button class="enter-btn" type="submit">
@@ -233,32 +414,137 @@ button {
 
 </div>
 
-<!-- WEBSITE SELECTION -->
+<!-- MAIN MENU -->
 <div id="menu-screen" class="screen hidden">
 
-    <div class="menu-content">
+    <div class="menu-header">
 
-        <h1>Select a website</h1>
+        <h1>School Terminal</h1>
 
-        <p>Choose a website to continue</p>
+        <p>SELECT A WEBSITE TO CONTINUE</p>
 
-        <div class="site-buttons">
+    </div>
 
-            <button
-                class="site-btn"
-                onclick="openWebsite('monkey')"
-            >
-                MonkeyGG2
-            </button>
+    <div class="cards">
 
-            <button
-                class="site-btn"
-                onclick="openWebsite('ccported')"
-            >
-                CCPorted
-            </button>
+        <!-- MONKEYGG2 -->
 
-        </div>
+        <button class="site-card" onclick="openWebsite('monkey')">
+
+            <div class="card-icon">
+
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+
+                    <defs>
+                        <linearGradient id="monkeyGradient" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#a5c9c1"/>
+                            <stop offset="100%" stop-color="#517f76"/>
+                        </linearGradient>
+                    </defs>
+
+                    <circle cx="100" cy="100" r="90"
+                            fill="#202b2a"/>
+
+                    <path d="M100 16
+                             C55 16 30 47 30 88
+                             C30 140 60 176 100 189
+                             C140 176 170 140 170 88
+                             C170 47 145 16 100 16Z"
+                          fill="url(#monkeyGradient)"/>
+
+                    <path d="M45 84
+                             C38 47 75 32 100 39
+                             C125 32 162 47 155 84
+                             L143 130
+                             C134 151 117 164 100 164
+                             C83 164 66 151 57 130Z"
+                          fill="#202b2a"/>
+
+                    <path d="M58 84 L88 92 L70 112Z"
+                          fill="#a5c9c1"/>
+
+                    <path d="M142 84 L112 92 L130 112Z"
+                          fill="#a5c9c1"/>
+
+                    <path d="M100 95 L76 133 L100 148 L124 133Z"
+                          fill="#a5c9c1"/>
+
+                    <path d="M82 133 L100 139 L118 133"
+                          fill="none" stroke="#202b2a"
+                          stroke-width="5" stroke-linecap="round"/>
+
+                </svg>
+
+            </div>
+
+            <h2>MonkeyGG2</h2>
+
+            <p>
+                Access MonkeyGG2 and explore its collection
+                of games and features.
+            </p>
+
+            <span class="card-label">Open website →</span>
+
+        </button>
+
+        <!-- CCPORTED -->
+
+        <button class="site-card" onclick="openWebsite('ccported')">
+
+            <div class="card-icon">
+
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+
+                    <defs>
+                        <linearGradient id="ccGradient" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#83c8ec"/>
+                            <stop offset="100%" stop-color="#476f9e"/>
+                        </linearGradient>
+                    </defs>
+
+                    <circle cx="100" cy="100" r="91"
+                            fill="#202b38"/>
+
+                    <path d="M100 16
+                             L119 34 L145 28
+                             L155 54 L181 68
+                             L171 96 L181 121
+                             L155 142 L150 170
+                             L120 167 L100 187
+                             L80 167 L50 170
+                             L45 142 L19 121
+                             L29 96 L19 68
+                             L45 54 L50 28
+                             L80 34Z"
+                          fill="url(#ccGradient)"/>
+
+                    <circle cx="100" cy="100" r="43"
+                            fill="#202b38"/>
+
+                    <circle cx="100" cy="100" r="25"
+                            fill="#83c8ec"/>
+
+                    <path d="M100 67 V42 M100 158 V133
+                             M67 100 H42 M158 100 H133"
+                          stroke="#c3e7f7"
+                          stroke-width="7"
+                          stroke-linecap="round"/>
+
+                </svg>
+
+            </div>
+
+            <h2>CCPorted</h2>
+
+            <p>
+                Open CCPorted and explore its games,
+                tools and other features.
+            </p>
+
+            <span class="card-label">Open website →</span>
+
+        </button>
 
     </div>
 
@@ -268,7 +554,7 @@ button {
 <div id="website-screen" class="screen hidden">
 
     <button class="back-btn" onclick="backToMenu()">
-        ← Back
+        ← Back to School Terminal
     </button>
 
     <iframe
@@ -289,12 +575,14 @@ const CORRECT_PASSWORD = "schoolmoneybelike";
 const loginScreen = document.getElementById("login-screen");
 const menuScreen = document.getElementById("menu-screen");
 const websiteScreen = document.getElementById("website-screen");
+
 const passwordInput = document.getElementById("password");
 const errorMessage = document.getElementById("error-message");
+
 const fade = document.getElementById("fade");
 const websiteFrame = document.getElementById("website-frame");
 
-// FADE TRANSITION
+// TRANSITION
 function transition(callback) {
 
     fade.classList.add("active");
@@ -310,7 +598,7 @@ function transition(callback) {
     }, 450);
 }
 
-// PASSWORD CHECK
+// LOGIN
 document.getElementById("login-form").addEventListener("submit", function(e) {
 
     e.preventDefault();
@@ -335,7 +623,7 @@ document.getElementById("login-form").addEventListener("submit", function(e) {
 
 });
 
-// OPEN WEBSITES
+// OPEN WEBSITE
 function openWebsite(site) {
 
     let url = "";
@@ -344,9 +632,11 @@ function openWebsite(site) {
         url = "https://monkeyg2.netlify.app/";
     }
 
-    if (site === "ccported") {
+    else if (site === "ccported") {
         url = "https://schoolported.netlify.app/";
     }
+
+    if (!url) return;
 
     transition(() => {
 
@@ -359,7 +649,7 @@ function openWebsite(site) {
 
 }
 
-// BACK TO MENU
+// BACK BUTTON
 function backToMenu() {
 
     transition(() => {
@@ -372,6 +662,13 @@ function backToMenu() {
     });
 
 }
+
+// ENTER KEY SUPPORT
+passwordInput.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+        document.getElementById("login-form").requestSubmit();
+    }
+});
 
 </script>
 
