@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>School Terminal</title>
 
 <style>
@@ -14,9 +14,10 @@
 }
 
 body {
-    background: #050505;
+    background: #050608;
     color: white;
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
     overflow: hidden;
 }
 
@@ -24,28 +25,30 @@ body {
 
 .background {
     position: fixed;
-    inset: -50%;
-    z-index: 0;
-    pointer-events: none;
+    inset: 0;
+    z-index: -2;
     overflow: hidden;
-    background: #030404;
+    background:
+        radial-gradient(ellipse at 50% 45%, #151b22 0%, #080a0e 55%, #030405 100%);
 }
 
 .background::before {
     content: "";
     position: absolute;
-    inset: 0;
-    background:
-        repeating-linear-gradient(
-            165deg,
-            transparent 0px,
-            transparent 65px,
-            rgba(180,220,255,0.12) 67px,
-            transparent 71px,
-            transparent 130px
-        );
-    transform: rotate(-12deg) scale(1.5);
-    animation: streaks 12s linear infinite;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: repeating-linear-gradient(
+        115deg,
+        transparent 0px,
+        transparent 100px,
+        rgba(255,255,255,0.035) 102px,
+        rgba(255,255,255,0.035) 104px,
+        transparent 106px,
+        transparent 220px
+    );
+    animation: moveBackground 18s linear infinite;
 }
 
 .background::after {
@@ -53,31 +56,29 @@ body {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(ellipse at center,
-        transparent 15%,
-        rgba(0,0,0,0.45) 75%,
-        #000 110%);
+        radial-gradient(ellipse at center, transparent 20%, rgba(0,0,0,0.7) 100%);
 }
 
-@keyframes streaks {
+@keyframes moveBackground {
     from {
-        transform: translateX(-100px) translateY(-100px) rotate(-12deg) scale(1.5);
+        transform: translate(0, 0);
     }
     to {
-        transform: translateX(100px) translateY(100px) rotate(-12deg) scale(1.5);
+        transform: translate(120px, 120px);
     }
 }
 
-/* SCREENS */
+/* MAIN SCREEN */
 
 .screen {
-    position: fixed;
+    position: absolute;
     inset: 0;
-    z-index: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
+    padding: 30px;
+    transition: opacity 0.45s ease, transform 0.45s ease;
 }
 
 .hidden {
@@ -86,146 +87,163 @@ body {
 
 /* PASSWORD SCREEN */
 
-.login-box {
-    width: 90%;
-    max-width: 380px;
-    text-align: center;
+#passwordScreen {
+    z-index: 2;
 }
 
-.login-box h1 {
-    font-size: 42px;
+.password-box {
+    width: 100%;
+    max-width: 390px;
+    text-align: center;
+    padding: 42px 35px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 18px;
+    background: rgba(18,21,26,0.82);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 20px 80px rgba(0,0,0,0.5);
+}
+
+.password-box h1 {
+    font-size: 38px;
     font-weight: 300;
     letter-spacing: 5px;
-    color: #a5c9c1;
+    color: #b7f7e5;
     margin-bottom: 12px;
 }
 
-.subtitle {
-    color: #999;
+.password-box p {
+    color: #9299a3;
     font-size: 14px;
     margin-bottom: 30px;
 }
 
-input {
-    width: 100%;
-    padding: 16px;
-    background: #222;
-    border: 1px solid #444;
-    border-radius: 9px;
-    color: white;
-    font-size: 15px;
-    text-align: center;
-    outline: none;
-    margin-bottom: 13px;
-}
-
-input:focus {
-    border-color: #a5c9c1;
-}
-
-button {
-    cursor: pointer;
-    font-family: inherit;
-}
-
-.enter-btn {
+.password-box input {
     width: 100%;
     padding: 15px;
-    border: none;
+    border: 1px solid #343b43;
     border-radius: 9px;
-    background: #a5c9c1;
-    color: #101010;
-    font-weight: bold;
-    font-size: 14px;
+    background: #101419;
+    color: white;
+    outline: none;
+    font-size: 15px;
+    text-align: center;
     transition: 0.2s;
 }
 
-.enter-btn:hover {
-    background: white;
+.password-box input:focus {
+    border-color: #9cebd5;
+    box-shadow: 0 0 15px rgba(156,235,213,0.12);
+}
+
+.password-box button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 14px;
+    border: none;
+    border-radius: 9px;
+    background: #b7f7e5;
+    color: #07100d;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.password-box button:hover {
+    background: #d2fff2;
     transform: translateY(-2px);
 }
 
-.error {
-    color: #ff6464;
+#errorMessage {
+    color: #ff7777;
     font-size: 13px;
     margin-top: 15px;
     min-height: 16px;
 }
 
-/* MAIN MENU */
+/* WEBSITE MENU */
 
-#menu-screen {
-    justify-content: flex-start;
+#menuScreen {
+    z-index: 1;
     overflow-y: auto;
-    padding: 35px 20px 45px;
+    justify-content: center;
 }
 
-.menu-header {
-    width: 100%;
+.header {
     text-align: center;
-    margin: 0 0 35px;
-    padding-top: 5px;
+    margin-bottom: 55px;
 }
 
-.menu-header h1 {
-    font-size: clamp(43px, 7vw, 105px);
+.header h1 {
+    font-size: clamp(42px, 7vw, 76px);
     font-weight: 300;
-    letter-spacing: 8px;
-    color: #a5c9c1;
-    text-shadow: 0 0 25px rgba(165,201,193,0.12);
+    letter-spacing: 9px;
+    color: #b7f7e5;
+    text-shadow: 0 0 35px rgba(183,247,229,0.15);
 }
 
-.menu-header p {
-    color: #888;
+.header p {
+    color: #858d98;
     font-size: 14px;
-    margin-top: 5px;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
+    margin-top: 13px;
+    text-transform: uppercase;
 }
-
-/* WEBSITE CARDS */
 
 .cards {
     width: 100%;
-    max-width: 1120px;
+    max-width: 1250px;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 24px;
     margin: 0 auto;
 }
 
+/* WEBSITE CARDS */
+
 .site-card {
-    min-height: 440px;
-    background: #353535;
-    border: 1px solid rgba(255,255,255,0.035);
-    border-radius: 48px;
-    padding: 35px 25px 30px;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: flex-start;
-    text-align: center;
-    box-shadow: 0 9px 17px rgba(255,255,255,0.10);
-    transition:
-        transform 0.3s ease,
-        background 0.3s ease,
-        box-shadow 0.3s ease;
+    position: relative;
+    min-height: 330px;
+    padding: 35px 28px;
+    text-align: left;
+    border: 1px solid rgba(255,255,255,0.11);
+    border-radius: 18px;
+    background: rgba(31,35,42,0.76);
     color: white;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.25s ease,
+                background 0.25s ease, box-shadow 0.25s ease;
+    backdrop-filter: blur(12px);
+}
+
+.site-card::before {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    right: -90px;
+    top: -90px;
+    background: rgba(183,247,229,0.06);
+    border-radius: 50%;
+    transition: 0.3s;
 }
 
 .site-card:hover {
-    transform: translateY(-9px) scale(1.015);
-    background: #414141;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.5),
-                0 0 20px rgba(165,201,193,0.12);
+    transform: translateY(-8px);
+    border-color: rgba(183,247,229,0.5);
+    background: rgba(39,45,52,0.92);
+    box-shadow: 0 15px 45px rgba(0,0,0,0.35);
+}
+
+.site-card:hover::before {
+    transform: scale(1.5);
 }
 
 .card-icon {
-    width: 210px;
-    height: 210px;
-    margin: 5px 0 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 90px;
+    height: 90px;
+    margin-bottom: 27px;
 }
 
 .card-icon svg {
@@ -233,85 +251,96 @@ button {
     height: 100%;
 }
 
-.card-icon .emoji-icon {
-    font-size: 145px;
-    filter: drop-shadow(0 8px 10px rgba(0,0,0,0.25));
-}
-
 .site-card h2 {
-    font-size: 31px;
+    font-size: 24px;
     font-weight: 600;
-    margin-bottom: 20px;
-    color: #ededed;
+    margin-bottom: 13px;
 }
 
 .site-card p {
-    font-size: 17px;
-    line-height: 1.5;
-    color: #dedede;
-    max-width: 380px;
+    color: #a5abb4;
+    font-size: 14px;
+    line-height: 1.7;
+    min-height: 48px;
 }
 
 .card-label {
-    margin-top: auto;
-    padding-top: 20px;
-    color: #a5c9c1;
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    display: inline-block;
+    margin-top: 25px;
+    color: #b7f7e5;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
 }
 
-/* FPS STYLE DECORATION */
+/* FOOTER */
 
-.status {
-    position: fixed;
-    top: 20px;
-    right: 25px;
-    color: rgba(255,255,255,0.35);
-    font-family: monospace;
-    font-size: 17px;
-    z-index: 2;
-    letter-spacing: 1px;
+.footer {
+    position: absolute;
+    bottom: 22px;
+    color: #535b65;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-align: center;
 }
 
 /* WEBSITE VIEWER */
 
-#website-screen {
-    display: block;
-    background: black;
-    z-index: 10;
+#viewerScreen {
+    z-index: 5;
+    padding: 0;
+    background: #050608;
 }
 
-#website-frame {
+.viewer-header {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: rgba(12,15,19,0.96);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    z-index: 2;
+}
+
+.viewer-title {
+    color: #b7f7e5;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+.back-button {
+    padding: 8px 16px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 7px;
+    background: #20252c;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.back-button:hover {
+    background: #343c45;
+    border-color: #b7f7e5;
+}
+
+#websiteFrame {
+    position: absolute;
+    top: 52px;
+    left: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 52px);
     border: none;
     background: white;
 }
 
-.back-btn {
-    position: fixed;
-    z-index: 15;
-    top: 15px;
-    left: 15px;
-    padding: 11px 17px;
-    border: 1px solid #666;
-    border-radius: 8px;
-    background: rgba(0,0,0,0.8);
-    color: white;
-    font-size: 14px;
-    transition: 0.2s;
-}
-
-.back-btn:hover {
-    background: #444;
-}
-
 /* FADE TRANSITION */
 
-#fade {
+#fadeOverlay {
     position: fixed;
     inset: 0;
     background: black;
@@ -321,109 +350,113 @@ button {
     transition: opacity 0.45s ease;
 }
 
-#fade.active {
+#fadeOverlay.active {
     opacity: 1;
     pointer-events: all;
 }
 
 /* MOBILE */
 
-@media (max-width: 700px) {
-
-    #menu-screen {
-        padding-top: 65px;
-    }
-
-    .menu-header h1 {
-        letter-spacing: 3px;
+@media (max-width: 850px) {
+    #menuScreen {
+        justify-content: flex-start;
+        padding-top: 70px;
+        padding-bottom: 80px;
     }
 
     .cards {
-        max-width: 420px;
+        max-width: 600px;
         grid-template-columns: 1fr;
-        gap: 22px;
+        gap: 18px;
     }
 
     .site-card {
-        min-height: 350px;
-        border-radius: 32px;
+        min-height: 260px;
     }
 
-    .card-icon {
-        width: 155px;
-        height: 155px;
+    .header {
+        margin-bottom: 35px;
     }
 
-    .card-icon .emoji-icon {
-        font-size: 110px;
-    }
-
-    .site-card h2 {
-        font-size: 27px;
-    }
-
-    .site-card p {
-        font-size: 15px;
+    .footer {
+        position: relative;
+        bottom: auto;
+        margin-top: 35px;
     }
 }
 
+@media (max-width: 480px) {
+    .screen {
+        padding: 20px;
+    }
+
+    #menuScreen {
+        padding-top: 45px;
+        padding-bottom: 35px;
+    }
+
+    .header h1 {
+        font-size: 39px;
+        letter-spacing: 5px;
+    }
+
+    .password-box {
+        padding: 35px 22px;
+    }
+
+    .viewer-header {
+        padding: 0 12px;
+    }
+}
 </style>
 </head>
 
 <body>
 
-<!-- BACKGROUND -->
 <div class="background"></div>
 
-<!-- STATUS -->
-<div class="status" id="status">FPS: --</div>
-
-<!-- FADE -->
-<div id="fade"></div>
-
 <!-- PASSWORD SCREEN -->
-<div id="login-screen" class="screen">
 
-    <div class="login-box">
+<div class="screen" id="passwordScreen">
 
-        <h1>School Terminal</h1>
+    <div class="password-box">
 
-        <p class="subtitle">
-            Enter the password to continue
-        </p>
+        <h1>SCHOOL</h1>
 
-        <form id="login-form">
+        <p>Enter the access password to continue</p>
+
+        <form onsubmit="checkPassword(event)">
 
             <input
                 type="password"
-                id="password"
+                id="passwordInput"
                 placeholder="Enter password..."
                 autocomplete="off"
-                required
             >
 
-            <button class="enter-btn" type="submit">
-                ENTER
-            </button>
+            <button type="submit">ENTER TERMINAL</button>
 
         </form>
 
-        <p class="error" id="error-message"></p>
+        <div id="errorMessage"></div>
 
     </div>
 
 </div>
 
-<!-- MAIN MENU -->
-<div id="menu-screen" class="screen hidden">
 
-    <div class="menu-header">
+<!-- WEBSITE MENU -->
+
+<div class="screen hidden" id="menuScreen">
+
+    <div class="header">
 
         <h1>School Terminal</h1>
 
-        <p>SELECT A WEBSITE TO CONTINUE</p>
+        <p>Select a website to continue</p>
 
     </div>
+
 
     <div class="cards">
 
@@ -435,43 +468,19 @@ button {
 
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
 
-                    <defs>
-                        <linearGradient id="monkeyGradient" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#a5c9c1"/>
-                            <stop offset="100%" stop-color="#517f76"/>
-                        </linearGradient>
-                    </defs>
+                    <circle cx="100" cy="100" r="90" fill="#263c50"/>
 
-                    <circle cx="100" cy="100" r="90"
-                            fill="#202b2a"/>
+                    <circle cx="100" cy="100" r="65" fill="#4e9ed1"/>
 
-                    <path d="M100 16
-                             C55 16 30 47 30 88
-                             C30 140 60 176 100 189
-                             C140 176 170 140 170 88
-                             C170 47 145 16 100 16Z"
-                          fill="url(#monkeyGradient)"/>
+                    <circle cx="77" cy="83" r="12" fill="white"/>
+                    <circle cx="123" cy="83" r="12" fill="white"/>
 
-                    <path d="M45 84
-                             C38 47 75 32 100 39
-                             C125 32 162 47 155 84
-                             L143 130
-                             C134 151 117 164 100 164
-                             C83 164 66 151 57 130Z"
-                          fill="#202b2a"/>
+                    <circle cx="79" cy="85" r="5" fill="#17232e"/>
+                    <circle cx="125" cy="85" r="5" fill="#17232e"/>
 
-                    <path d="M58 84 L88 92 L70 112Z"
-                          fill="#a5c9c1"/>
-
-                    <path d="M142 84 L112 92 L130 112Z"
-                          fill="#a5c9c1"/>
-
-                    <path d="M100 95 L76 133 L100 148 L124 133Z"
-                          fill="#a5c9c1"/>
-
-                    <path d="M82 133 L100 139 L118 133"
-                          fill="none" stroke="#202b2a"
-                          stroke-width="5" stroke-linecap="round"/>
+                    <path d="M72 119 Q100 148 128 119"
+                          fill="none" stroke="white"
+                          stroke-width="9" stroke-linecap="round"/>
 
                 </svg>
 
@@ -480,13 +489,14 @@ button {
             <h2>MonkeyGG2</h2>
 
             <p>
-                Access MonkeyGG2 and explore its collection
-                of games and features.
+                Explore the MonkeyGG2 website and its collection
+                of games and other features.
             </p>
 
             <span class="card-label">Open website →</span>
 
         </button>
+
 
         <!-- CCPORTED -->
 
@@ -496,40 +506,24 @@ button {
 
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
 
-                    <defs>
-                        <linearGradient id="ccGradient" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#83c8ec"/>
-                            <stop offset="100%" stop-color="#476f9e"/>
-                        </linearGradient>
-                    </defs>
+                    <circle cx="100" cy="100" r="90" fill="#243b36"/>
 
-                    <circle cx="100" cy="100" r="91"
-                            fill="#202b38"/>
+                    <rect x="40" y="45" width="120" height="110"
+                          rx="20" fill="#63c9a5"/>
 
-                    <path d="M100 16
-                             L119 34 L145 28
-                             L155 54 L181 68
-                             L171 96 L181 121
-                             L155 142 L150 170
-                             L120 167 L100 187
-                             L80 167 L50 170
-                             L45 142 L19 121
-                             L29 96 L19 68
-                             L45 54 L50 28
-                             L80 34Z"
-                          fill="url(#ccGradient)"/>
+                    <path d="M78 76 L56 100 L78 124"
+                          fill="none" stroke="white"
+                          stroke-width="10" stroke-linecap="round"
+                          stroke-linejoin="round"/>
 
-                    <circle cx="100" cy="100" r="43"
-                            fill="#202b38"/>
+                    <path d="M122 76 L144 100 L122 124"
+                          fill="none" stroke="white"
+                          stroke-width="10" stroke-linecap="round"
+                          stroke-linejoin="round"/>
 
-                    <circle cx="100" cy="100" r="25"
-                            fill="#83c8ec"/>
-
-                    <path d="M100 67 V42 M100 158 V133
-                             M67 100 H42 M158 100 H133"
-                          stroke="#c3e7f7"
-                          stroke-width="7"
-                          stroke-linecap="round"/>
+                    <path d="M108 67 L92 133"
+                          fill="none" stroke="#d6fff0"
+                          stroke-width="9" stroke-linecap="round"/>
 
                 </svg>
 
@@ -538,8 +532,51 @@ button {
             <h2>CCPorted</h2>
 
             <p>
-                Open CCPorted and explore its games,
-                tools and other features.
+                Visit the CCPorted website and explore its
+                collection of games and projects.
+            </p>
+
+            <span class="card-label">Open website →</span>
+
+        </button>
+
+
+        <!-- 3KH0 PROJECTS -->
+
+        <button class="site-card" onclick="openWebsite('3kh0')">
+
+            <div class="card-icon">
+
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+
+                    <circle cx="100" cy="100" r="90" fill="#25233b"/>
+
+                    <rect x="43" y="43" width="114" height="114"
+                          rx="15" fill="#8065c9"/>
+
+                    <path d="M78 78 L57 100 L78 122"
+                          fill="none" stroke="white"
+                          stroke-width="10" stroke-linecap="round"
+                          stroke-linejoin="round"/>
+
+                    <path d="M122 78 L143 100 L122 122"
+                          fill="none" stroke="white"
+                          stroke-width="10" stroke-linecap="round"
+                          stroke-linejoin="round"/>
+
+                    <path d="M111 67 L89 133"
+                          fill="none" stroke="#b9a5ff"
+                          stroke-width="9" stroke-linecap="round"/>
+
+                </svg>
+
+            </div>
+
+            <h2>3kh0 Projects</h2>
+
+            <p>
+                Explore the 3kh0 projects collection
+                and discover more websites and projects.
             </p>
 
             <span class="card-label">Open website →</span>
@@ -548,17 +585,29 @@ button {
 
     </div>
 
+    <div class="footer">
+        SCHOOL TERMINAL • SELECT YOUR DESTINATION
+    </div>
+
 </div>
 
-<!-- WEBSITE VIEWER -->
-<div id="website-screen" class="screen hidden">
 
-    <button class="back-btn" onclick="backToMenu()">
-        ← Back to School Terminal
-    </button>
+<!-- WEBSITE VIEWER -->
+
+<div class="screen hidden" id="viewerScreen">
+
+    <div class="viewer-header">
+
+        <span class="viewer-title">SCHOOL TERMINAL</span>
+
+        <button class="back-button" onclick="backToMenu()">
+            ← Back
+        </button>
+
+    </div>
 
     <iframe
-        id="website-frame"
+        id="websiteFrame"
         src="about:blank"
         allowfullscreen
         title="Selected website"
@@ -566,109 +615,132 @@ button {
 
 </div>
 
+
+<!-- FADE OVERLAY -->
+
+<div id="fadeOverlay"></div>
+
+
 <script>
 
-// PASSWORD
-const CORRECT_PASSWORD = "schoolmoneybelike";
+/* PASSWORD */
 
-// ELEMENTS
-const loginScreen = document.getElementById("login-screen");
-const menuScreen = document.getElementById("menu-screen");
-const websiteScreen = document.getElementById("website-screen");
+const PASSWORD = "schoolmoneybelike";
 
-const passwordInput = document.getElementById("password");
-const errorMessage = document.getElementById("error-message");
 
-const fade = document.getElementById("fade");
-const websiteFrame = document.getElementById("website-frame");
+function checkPassword(event) {
 
-// TRANSITION
-function transition(callback) {
+    event.preventDefault();
 
-    fade.classList.add("active");
+    const input = document.getElementById("passwordInput");
+    const error = document.getElementById("errorMessage");
+
+    if (input.value === PASSWORD) {
+
+        error.textContent = "";
+
+        fadeTransition(() => {
+
+            document.getElementById("passwordScreen").classList.add("hidden");
+
+            document.getElementById("menuScreen").classList.remove("hidden");
+
+        });
+
+    } else {
+
+        error.textContent = "Incorrect password. Please try again.";
+
+        input.value = "";
+        input.focus();
+
+    }
+
+}
+
+
+/* WEBSITE LINKS */
+
+function openWebsite(site) {
+
+    let url = "";
+
+    if (site === "monkey") {
+
+        url = "https://monkeyg2.netlify.app/";
+
+    }
+
+    else if (site === "ccported") {
+
+        url = "https://schoolported.netlify.app/";
+
+    }
+
+    else if (site === "3kh0") {
+
+        url = "https://3kh0g.netlify.app/projects";
+
+    }
+
+    if (!url) return;
+
+    fadeTransition(() => {
+
+        document.getElementById("menuScreen").classList.add("hidden");
+
+        document.getElementById("viewerScreen").classList.remove("hidden");
+
+        document.getElementById("websiteFrame").src = url;
+
+    });
+
+}
+
+
+/* BACK BUTTON */
+
+function backToMenu() {
+
+    fadeTransition(() => {
+
+        document.getElementById("websiteFrame").src = "about:blank";
+
+        document.getElementById("viewerScreen").classList.add("hidden");
+
+        document.getElementById("menuScreen").classList.remove("hidden");
+
+    });
+
+}
+
+
+/* FADE TRANSITION */
+
+function fadeTransition(callback) {
+
+    const overlay = document.getElementById("fadeOverlay");
+
+    overlay.classList.add("active");
 
     setTimeout(() => {
 
         callback();
 
         setTimeout(() => {
-            fade.classList.remove("active");
+
+            overlay.classList.remove("active");
+
         }, 100);
 
     }, 450);
-}
-
-// LOGIN
-document.getElementById("login-form").addEventListener("submit", function(e) {
-
-    e.preventDefault();
-
-    if (passwordInput.value === CORRECT_PASSWORD) {
-
-        errorMessage.textContent = "";
-
-        transition(() => {
-
-            loginScreen.classList.add("hidden");
-            menuScreen.classList.remove("hidden");
-
-        });
-
-    } else {
-
-        errorMessage.textContent = "Incorrect password. Please try again.";
-        passwordInput.value = "";
-
-    }
-
-});
-
-// OPEN WEBSITE
-function openWebsite(site) {
-
-    let url = "";
-
-    if (site === "monkey") {
-        url = "https://monkeyg2.netlify.app/";
-    }
-
-    else if (site === "ccported") {
-        url = "https://schoolported.netlify.app/";
-    }
-
-    if (!url) return;
-
-    transition(() => {
-
-        menuScreen.classList.add("hidden");
-        websiteScreen.classList.remove("hidden");
-
-        websiteFrame.src = url;
-
-    });
 
 }
 
-// BACK BUTTON
-function backToMenu() {
 
-    transition(() => {
+/* ENTER KEY */
 
-        websiteFrame.src = "about:blank";
-
-        websiteScreen.classList.add("hidden");
-        menuScreen.classList.remove("hidden");
-
-    });
-
-}
-
-// ENTER KEY SUPPORT
-passwordInput.addEventListener("keydown", function(e) {
-    if (e.key === "Enter") {
-        document.getElementById("login-form").requestSubmit();
-    }
-});
+document.getElementById("passwordInput").focus();
 
 </script>
 
