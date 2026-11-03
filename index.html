@@ -21,7 +21,7 @@ body {
     overflow-x: hidden;
 }
 
-/* ANIMATED BACKGROUND */
+/* BACKGROUND */
 
 .background {
     position: fixed;
@@ -67,12 +67,8 @@ body {
 }
 
 @keyframes moveBackground {
-    from {
-        transform: translate(0, 0);
-    }
-    to {
-        transform: translate(120px, 120px);
-    }
+    from { transform: translate(0, 0); }
+    to { transform: translate(120px, 120px); }
 }
 
 /* SCREENS */
@@ -135,12 +131,10 @@ body {
     outline: none;
     font-size: 15px;
     text-align: center;
-    transition: 0.2s;
 }
 
 .password-box input:focus {
     border-color: #9cebd5;
-    box-shadow: 0 0 15px rgba(156,235,213,0.12);
 }
 
 .password-box button {
@@ -154,12 +148,6 @@ body {
     font-weight: bold;
     font-size: 15px;
     cursor: pointer;
-    transition: 0.2s;
-}
-
-.password-box button:hover {
-    background: #d2fff2;
-    transform: translateY(-2px);
 }
 
 #errorMessage {
@@ -169,11 +157,7 @@ body {
     min-height: 16px;
 }
 
-/* WEBSITE MENU */
-
-#menuScreen {
-    z-index: 1;
-}
+/* MENU */
 
 .header {
     text-align: center;
@@ -291,7 +275,7 @@ body {
     text-align: center;
 }
 
-/* FADE TRANSITION */
+/* FADE */
 
 #fadeOverlay {
     position: fixed;
@@ -363,13 +347,10 @@ body {
 <div class="screen" id="passwordScreen">
 
     <div class="password-box">
-
         <h1>SCHOOL</h1>
-
         <p>Enter the access password to continue</p>
 
         <form onsubmit="checkPassword(event)">
-
             <input
                 type="password"
                 id="passwordInput"
@@ -378,28 +359,21 @@ body {
             >
 
             <button type="submit">ENTER TERMINAL</button>
-
         </form>
 
         <div id="errorMessage"></div>
-
     </div>
 
 </div>
-
 
 <!-- WEBSITE MENU -->
 
 <div class="screen hidden" id="menuScreen">
 
     <div class="header">
-
         <h1>School Terminal</h1>
-
         <p>Select a website to continue</p>
-
     </div>
-
 
     <div class="cards">
 
@@ -408,24 +382,17 @@ body {
         <button class="site-card" onclick="openWebsite('monkey')">
 
             <div class="card-icon">
-
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-
                     <circle cx="100" cy="100" r="90" fill="#263c50"/>
                     <circle cx="100" cy="100" r="65" fill="#4e9ed1"/>
-
                     <circle cx="77" cy="83" r="12" fill="white"/>
                     <circle cx="123" cy="83" r="12" fill="white"/>
-
                     <circle cx="79" cy="85" r="5" fill="#17232e"/>
                     <circle cx="125" cy="85" r="5" fill="#17232e"/>
-
                     <path d="M72 119 Q100 148 128 119"
                           fill="none" stroke="white"
                           stroke-width="9" stroke-linecap="round"/>
-
                 </svg>
-
             </div>
 
             <h2>MonkeyGG2</h2>
@@ -439,36 +406,27 @@ body {
 
         </button>
 
-
         <!-- CCPORTED -->
 
         <button class="site-card" onclick="openWebsite('ccported')">
 
             <div class="card-icon">
-
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-
                     <circle cx="100" cy="100" r="90" fill="#243b36"/>
-
                     <rect x="40" y="45" width="120" height="110"
                           rx="20" fill="#63c9a5"/>
-
                     <path d="M78 76 L56 100 L78 124"
                           fill="none" stroke="white"
                           stroke-width="10" stroke-linecap="round"
                           stroke-linejoin="round"/>
-
                     <path d="M122 76 L144 100 L122 124"
                           fill="none" stroke="white"
                           stroke-width="10" stroke-linecap="round"
                           stroke-linejoin="round"/>
-
                     <path d="M108 67 L92 133"
                           fill="none" stroke="#d6fff0"
                           stroke-width="9" stroke-linecap="round"/>
-
                 </svg>
-
             </div>
 
             <h2>CCPorted</h2>
@@ -482,36 +440,27 @@ body {
 
         </button>
 
-
         <!-- 3KH0 PROJECTS -->
 
         <button class="site-card" onclick="openWebsite('3kh0')">
 
             <div class="card-icon">
-
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-
                     <circle cx="100" cy="100" r="90" fill="#25233b"/>
-
                     <rect x="43" y="43" width="114" height="114"
                           rx="15" fill="#8065c9"/>
-
                     <path d="M78 78 L57 100 L78 122"
                           fill="none" stroke="white"
                           stroke-width="10" stroke-linecap="round"
                           stroke-linejoin="round"/>
-
                     <path d="M122 78 L143 100 L122 122"
                           fill="none" stroke="white"
                           stroke-width="10" stroke-linecap="round"
                           stroke-linejoin="round"/>
-
                     <path d="M111 67 L89 133"
                           fill="none" stroke="#b9a5ff"
                           stroke-width="9" stroke-linecap="round"/>
-
                 </svg>
-
             </div>
 
             <h2>3kh0 Projects</h2>
@@ -533,21 +482,59 @@ body {
 
 </div>
 
-
 <!-- FADE OVERLAY -->
 
 <div id="fadeOverlay"></div>
 
-
 <script>
 
-/* PASSWORD */
+/* ==================================
+   CONFIGURATION
+================================== */
 
-const PASSWORD = "schoolmoneybelike";
+// Set to null to disable the password screen.
+// Set to a string to enable password protection.
+
+const PASSWORD = null;
+
+
+/* ==================================
+   INITIAL SCREEN
+================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const passwordScreen = document.getElementById("passwordScreen");
+    const menuScreen = document.getElementById("menuScreen");
+
+    if (PASSWORD === null || PASSWORD === undefined || PASSWORD === "") {
+
+        passwordScreen.classList.add("hidden");
+        menuScreen.classList.remove("hidden");
+
+    } else {
+
+        passwordScreen.classList.remove("hidden");
+        menuScreen.classList.add("hidden");
+
+        document.getElementById("passwordInput").focus();
+
+    }
+
+});
+
+
+/* ==================================
+   PASSWORD CHECK
+================================== */
 
 function checkPassword(event) {
 
     event.preventDefault();
+
+    if (PASSWORD === null || PASSWORD === undefined || PASSWORD === "") {
+        return;
+    }
 
     const input = document.getElementById("passwordInput");
     const error = document.getElementById("errorMessage");
@@ -578,28 +565,24 @@ function checkPassword(event) {
 }
 
 
-/* OPEN WEBSITES IN NEW TAB */
+/* ==================================
+   OPEN WEBSITES IN NEW TAB
+================================== */
 
 function openWebsite(site) {
 
     let url = "";
 
     if (site === "monkey") {
-
         url = "https://monkeyg2.netlify.app/";
-
     }
 
     else if (site === "ccported") {
-
         url = "https://schoolported.netlify.app/";
-
     }
 
     else if (site === "3kh0") {
-
         url = "https://3kh0g.netlify.app/projects";
-
     }
 
     if (!url) return;
@@ -609,7 +592,9 @@ function openWebsite(site) {
 }
 
 
-/* FADE TRANSITION */
+/* ==================================
+   FADE TRANSITION
+================================== */
 
 function fadeTransition(callback) {
 
@@ -620,22 +605,14 @@ function fadeTransition(callback) {
     setTimeout(() => {
 
         callback();
-        
 
         setTimeout(() => {
-
             overlay.classList.remove("active");
-
         }, 100);
 
     }, 450);
 
 }
-
-
-/* INITIAL SETUP */
-
-document.getElementById("passwordInput").focus();
 
 </script>
 
