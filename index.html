@@ -355,7 +355,7 @@ body {
                 type="password"
                 id="passwordInput"
                 placeholder="Enter password..."
-                autocomplete="off"
+                autocomplete="current-password"
             >
 
             <button type="submit">ENTER TERMINAL</button>
@@ -487,133 +487,86 @@ body {
 <div id="fadeOverlay"></div>
 
 <script>
+/* Authentication is handled by the Netlify Function.
+   Set AUTH_PASSWORD in Netlify environment variables. */
+const AUTH_API = "/api/auth";
 
-/* ==================================
-   CONFIGURATION
-================================== */
-
-// Set to null to disable the password screen.
-// Set to a string to enable password protection.
-
-const PASSWORD = null;
-
-
-/* ==================================
-   INITIAL SCREEN
-================================== */
-
-document.addEventListener("DOMContentLoaded", () => {
-
+document.addEventListener("DOMContentLoaded", async () => {
     const passwordScreen = document.getElementById("passwordScreen");
     const menuScreen = document.getElementById("menuScreen");
-
-    if (PASSWORD === null || PASSWORD === undefined || PASSWORD === "") {
-
-        passwordScreen.classList.add("hidden");
-        menuScreen.classList.remove("hidden");
-
-    } else {
-
-        passwordScreen.classList.remove("hidden");
-        menuScreen.classList.add("hidden");
-
-        document.getElementById("passwordInput").focus();
-
+    try {
+        const response = await fetch(`${AUTH_API}?action=status`, {
+            credentials: "same-origin"
+        });
+        const result = await response.json();
+        if (result.authenticated) {
+            passwordScreen.classList.add("hidden");
+            menuScreen.classList.remove("hidden");
+        } else {
+            passwordScreen.classList.remove("hidden");
+            menuScreen.classList.add("hidden");
+            document.getElementById("passwordInput").focus();
+        }
+    } catch (error) {
+        document.getElementById("errorMessage").textContent =
+            "Unable to connect to the login service. Please refresh.";
     }
-
 });
 
-
-/* ==================================
-   PASSWORD CHECK
-================================== */
-
-function checkPassword(event) {
-
+async function checkPassword(event) {
     event.preventDefault();
-
-    if (PASSWORD === null || PASSWORD === undefined || PASSWORD === "") {
-        return;
-    }
-
     const input = document.getElementById("passwordInput");
     const error = document.getElementById("errorMessage");
+    const button = document.querySelector(".password-box button");
+    error.textContent = "";
+    button.disabled = true;
+    button.textContent = "CHECKING...";
 
-    if (input.value === PASSWORD) {
-
-        error.textContent = "";
+    try {
+        const response = await fetch(`${AUTH_API}?action=login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({ password: input.value })
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success) {
+            error.textContent = result.error || "Incorrect password. Please try again.";
+            input.value = "";
+            input.focus();
+            return;
+        }
 
         fadeTransition(() => {
-
-            document.getElementById("passwordScreen")
-                .classList.add("hidden");
-
-            document.getElementById("menuScreen")
-                .classList.remove("hidden");
-
+            document.getElementById("passwordScreen").classList.add("hidden");
+            document.getElementById("menuScreen").classList.remove("hidden");
         });
-
-    } else {
-
-        error.textContent = "Incorrect password. Please try again.";
-
-        input.value = "";
-        input.focus();
-
+    } catch (error) {
+        error.textContent = "Login service unavailable. Please try again.";
+    } finally {
+        button.disabled = false;
+        button.textContent = "ENTER TERMINAL";
     }
-
 }
-
-
-/* ==================================
-   OPEN WEBSITES IN NEW TAB
-================================== */
 
 function openWebsite(site) {
-
-    let url = "";
-
-    if (site === "monkey") {
-        url = "https://monkeyg2.netlify.app/";
-    }
-
-    else if (site === "ccported") {
-        url = "https://schoolported.netlify.app/";
-    }
-
-    else if (site === "3kh0") {
-        url = "https://3kh0g.netlify.app/projects";
-    }
-
-    if (!url) return;
-
-    window.open(url, "_blank", "noopener,noreferrer");
-
+    const destinations = {
+        monkey: "https://monkeyg2.netlify.app/",
+        ccported: "https://schoolported.netlify.app/",
+        "3kh0": "https://3kh0g.netlify.app/projects"
+    };
+    const url = destinations[site];
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
 }
-
-
-/* ==================================
-   FADE TRANSITION
-================================== */
 
 function fadeTransition(callback) {
-
     const overlay = document.getElementById("fadeOverlay");
-
     overlay.classList.add("active");
-
     setTimeout(() => {
-
         callback();
-
-        setTimeout(() => {
-            overlay.classList.remove("active");
-        }, 100);
-
+        setTimeout(() => overlay.classList.remove("active"), 100);
     }, 450);
-
 }
-
 </script>
 
 </body>

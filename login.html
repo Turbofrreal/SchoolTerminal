@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>School Terminal — Sign in</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{min-height:100vh;background:#050608;color:#fff;font-family:Arial,Helvetica,sans-serif;display:grid;place-items:center;padding:24px}
+body:before{content:"";position:fixed;inset:-50%;z-index:-1;background:radial-gradient(ellipse at 50% 45%,#151b22 0%,#080a0e 55%,#030405 100%);background-image:repeating-linear-gradient(115deg,transparent 0 100px,rgba(255,255,255,.035) 102px 104px,transparent 106px 220px);animation:bg 18s linear infinite}
+@keyframes bg{to{transform:translate(120px,120px)}}
+.box{width:100%;max-width:390px;text-align:center;padding:42px 35px;border:1px solid #ffffff1a;border-radius:18px;background:#12151ad1;backdrop-filter:blur(18px);box-shadow:0 20px 80px #0008}
+h1{font-size:38px;font-weight:300;letter-spacing:5px;color:#b7f7e5;margin-bottom:12px}p{color:#9299a3;font-size:14px;margin-bottom:28px;line-height:1.6}
+input{width:100%;padding:15px;border:1px solid #343b43;border-radius:9px;background:#101419;color:#fff;outline:none;font-size:15px;text-align:center}input:focus{border-color:#9cebd5}
+button{width:100%;margin-top:15px;padding:14px;border:0;border-radius:9px;background:#b7f7e5;color:#07100d;font-weight:bold;font-size:15px;cursor:pointer}
+#error{color:#ff7777;font-size:13px;margin-top:15px;min-height:16px}#status{color:#b7f7e5;font-size:13px;margin-top:15px}
+</style>
+</head>
+<body>
+<main class="box">
+<h1>SCHOOL</h1>
+<p id="message">Sign in once to access your connected websites.</p>
+<form id="loginForm">
+<input id="password" type="password" placeholder="Enter access password..." autocomplete="current-password" required>
+<button id="submit" type="submit">ENTER TERMINAL</button>
+</form>
+<div id="error"></div><div id="status"></div>
+</main>
+<script>
+const API="/api/auth";
+const params=new URLSearchParams(location.search);
+const returnTo=params.get("return");
+const challenge=params.get("challenge");
+const allowed=["https://schoolterminal.netlify.app","https://3kh0g.netlify.app","https://schoolported.netlify.app","https://monkeyg2.netlify.app"];
+function validReturn(){try{return !!returnTo&&allowed.includes(new URL(returnTo).origin)&&!!challenge}catch{return false}}
+async function authorize(){
+  if(!validReturn()){document.getElementById("message").textContent="Use this page by opening one of the connected websites.";return}
+  const r=await fetch(API+"?action=authorize",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify({returnTo,challenge})});
+  if(r.status===401)return false;
+  const d=await r.json();if(!r.ok)throw new Error(d.error||"Could not continue.");
+  const target=new URL(d.returnTo);target.searchParams.set("auth_code",d.code);location.replace(target.toString());return true;
+}
+(async()=>{try{if(validReturn()){const done=await authorize();if(done)return;}}catch(e){document.getElementById("error").textContent=e.message;}})();
+document.getElementById("loginForm").addEventListener("submit",async e=>{
+ e.preventDefault();const btn=document.getElementById("submit"),err=document.getElementById("error");btn.disabled=true;btn.textContent="CHECKING...";err.textContent="";
+ try{
+  const r=await fetch(API+"?action=login",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify({password:document.getElementById("password").value})});
+  const d=await r.json();if(!r.ok||!d.success)throw new Error(d.error||"Incorrect password.");
+  document.getElementById("status").textContent="Signed in. Connecting your website...";
+  if(validReturn()){await authorize();}else{location.href="/";}
+ }catch(e){err.textContent=e.message;document.getElementById("password").value="";}
+ finally{btn.disabled=false;btn.textContent="ENTER TERMINAL";}
+});
+</script>
+</body></html>
